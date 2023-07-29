@@ -1,7 +1,7 @@
-use std::fs::File;
-use std::io::prelude::*;
-
 use clap::Parser;
+use conway_sequence::NaiveGenerator;
+use conway_sequence::SmartGenerator;
+use std::fs::File;
 
 /// Generate and save conway sequence
 #[derive(Parser, Debug)]
@@ -12,53 +12,57 @@ struct Args {
 
     /// Number of the term in the sequence at which to stop
     #[arg(short, long, default_value_t = 10)]
-    iterations: u128,
+    iterations: usize,
+
+    #[arg(short, long, default_value_t = String::from("smart"))]
+    generator_type: String,
 }
 
-fn next_sequence(input: &[char]) -> Vec<char> {
-    let mut sequence = Vec::new();
-    let mut count = 0;
-    let mut digit = input[0];
+fn naive_generation(seed: String, iterations: usize, mut file: File) -> std::io::Result<File> {
+    let generator = NaiveGenerator::new();
+    let mut n_term: Vec<char> = seed.chars().collect();
 
-    for current in input.iter() {
-        if *current == digit {
-            count += 1;
-        } else {
-            sequence.push(char::from_digit(count, 10).unwrap());
-            sequence.push(digit);
-            digit = *current;
-            count = 1;
-        }
+    for i in 0..iterations {
+        let n1_term = generator.next_sequence(&n_term);
+        file = generator.write_sequence_to_file(n_term, file).unwrap();
+        n_term = n1_term;
+        println!("Iteration {i}");
     }
-    sequence.push(char::from_digit(count, 10).unwrap());
-    sequence.push(digit);
 
-    sequence
+    generator.write_sequence_to_file(n_term, file)
 }
 
-fn write_sequence_to_file(input: Vec<char>, mut file: File) -> std::io::Result<File> {
-    let row_str: String = input.iter().collect();
-    file.write_all(row_str.as_bytes())?;
-    file.write_all(b"\n")?;
-    Ok(file)
+fn smart_generation(seed: String, iterations: usize, mut file: File) -> std::io::Result<File> {
+    let generator = SmartGenerator::new();
+    let mut n_term: Vec<char> = seed.chars().collect();
+
+    for i in 0..iterations {
+        let n1_term = generator.next_sequence(&n_term);
+        file = generator.write_sequence_to_file(n_term, file).unwrap();
+        n_term = n1_term;
+        println!("Iteration {i}");
+    }
+
+    generator.write_sequence_to_file(n_term, file)
 }
 
 fn main() -> std::io::Result<()> {
     let args = Args::parse();
     let seed = args.seed;
     let iterations = args.iterations;
+    let generator_type = args.generator_type;
+    let file = File::create(format!("seed_{seed}_iterations_{iterations}.txt"))?;
 
-    let mut file = File::create(format!("seed_{seed}_iterations_{iterations}.txt"))?;
+    if generator_type == "naive" {
+        naive_generation(seed, iterations, file)?;
+    } else if generator_type == "smart" {
+        smart_generation(seed, iterations, file)?;
+    } else {
+        println!(
+            "Generator type not recognized, expected : naive or smart got {}",
+            generator_type
+        )
+    };
 
-    let mut n_term: Vec<char> = seed.chars().collect();
-
-    for i in 0..iterations {
-        let n1_term = next_sequence(&n_term);
-        file = write_sequence_to_file(n_term, file).unwrap();
-        n_term = n1_term;
-        println!("Iteration {i}");
-    }
-
-    write_sequence_to_file(n_term, file)?;
     Ok(())
 }
