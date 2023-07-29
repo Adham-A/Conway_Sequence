@@ -24,7 +24,15 @@ This program allows generating Conway's Sequence terms, saving the sequence data
 The program can be run with:
 
 ```bash
+cargo build
 cargo run
+```
+
+You can customize the seed value and the number of iterations by providing appropriate command-line arguments. For example, to start the sequence from the seed value "11121" and generate 20 iterations:
+
+```bash
+cargo run -- --seed 11121 --iterations 10
+cargo run -- -s 11121 -i 10
 ```
 
 ## References
