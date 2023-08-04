@@ -1,6 +1,6 @@
+// use crate::lookups::element_decay::ELEMENT_DECAY_LOOKUP;
 use std::fs::File;
 use std::io::prelude::*;
-
 #[derive(Default)]
 pub struct SmartGenerator {}
 
@@ -40,5 +40,4 @@ impl SmartGenerator {
         file.write_all(b"\n")?;
         Ok(file)
     }
-    // Add other methods for the smart generator here
 }
