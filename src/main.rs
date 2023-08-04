@@ -1,6 +1,7 @@
 use clap::Parser;
 use conway_sequence::NaiveGenerator;
 use conway_sequence::SmartGenerator;
+// use conway_sequence::SubSequence;
 use std::fs::File;
 
 /// Generate and save conway sequence
@@ -22,11 +23,10 @@ fn naive_generation(seed: String, iterations: usize, mut file: File) -> std::io:
     let generator = NaiveGenerator::new();
     let mut n_term: Vec<char> = seed.chars().collect();
 
-    for i in 0..iterations {
+    for _ in 0..iterations {
         let n1_term = generator.next_sequence(&n_term);
         file = generator.write_sequence_to_file(n_term, file).unwrap();
         n_term = n1_term;
-        println!("Iteration {i}");
     }
 
     generator.write_sequence_to_file(n_term, file)
@@ -58,10 +58,7 @@ fn main() -> std::io::Result<()> {
     } else if generator_type == "smart" {
         smart_generation(seed, iterations, file)?;
     } else {
-        println!(
-            "Generator type not recognized, expected : naive or smart got {}",
-            generator_type
-        )
+        println!("Generator type not recognized, expected : naive or smart got {generator_type}")
     };
 
     Ok(())
