@@ -1,6 +1,6 @@
 use phf::phf_map;
 
-pub static DECAYS: phf::Map<&'static str, &'static str> = phf_map! {
+pub static ELEMENT_DECAY_LOOKUP: phf::Map<&'static str, &'static str> = phf_map! {
     "H" => "H",
     "He" => "Hf.Pa.H.Ca.Li",
     "Li" => "He",
