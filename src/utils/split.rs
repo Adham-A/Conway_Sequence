@@ -40,7 +40,7 @@ pub fn is_valid_split(l: &str, r: &str) -> bool {
     }
 }
 
-pub fn is_1_1_x_1(
+fn is_1_1_x_1(
     string_len: usize,
     goal_len: usize,
     char_0: Option<char>,
@@ -51,7 +51,7 @@ pub fn is_1_1_x_1(
     string_len > goal_len && (o_1 == char_0 && o_1 != char_1 && char_2 != char_1)
 }
 
-pub fn is_1_3(
+fn is_1_3(
     char_0: Option<char>,
     char_1: Option<char>,
     char_2: Option<char>,
@@ -61,7 +61,7 @@ pub fn is_1_3(
     o_1 == char_0 && o_1 == char_1 && o_1 == char_2 && char_3 != o_1
 }
 
-pub fn is_3_1_x_not_3(
+fn is_3_1_x_not_3(
     string_len: usize,
     goal_len: usize,
     char_0: Option<char>,
