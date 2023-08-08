@@ -1,7 +1,6 @@
 use clap::Parser;
-use conway_sequence::NaiveGenerator;
-use conway_sequence::SmartGenerator;
-// use conway_sequence::SubSequence;
+use conway_sequence::generators::naive::NaiveGenerator;
+use conway_sequence::generators::smart::SmartGenerator;
 use std::fs::File;
 
 /// Generate and save conway sequence

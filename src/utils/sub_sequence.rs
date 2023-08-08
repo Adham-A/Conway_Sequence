@@ -1,7 +1,7 @@
+use crate::generators::naive::NaiveGenerator;
 use crate::lookups::element_decay::ELEMENT_DECAY_LOOKUP;
 use crate::lookups::sequence_element::SEQUENCE_ELEMENT_LOOKUP;
-use crate::split::is_valid_split;
-use crate::NaiveGenerator;
+use crate::utils::split::is_valid_split;
 use std::fmt;
 #[derive(Default)]
 pub struct SubSequence {
@@ -89,7 +89,7 @@ impl SubSequence {
 
 #[cfg(test)]
 mod tests {
-    use crate::SubSequence;
+    use crate::utils::sub_sequence::SubSequence;
     use test_case::test_case;
 
     #[test_case("1113213211".into())]

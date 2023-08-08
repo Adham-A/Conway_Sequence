@@ -76,7 +76,8 @@ fn is_3_1_x_not_3(
 }
 #[cfg(test)]
 mod tests {
-    use crate::split::is_valid_split;
+    use crate::utils::split::is_valid_split;
+
     use test_case::test_case;
     #[test_case("", "1" ; "Left string empty")]
     #[test_case("1",  ""  ; "Right string string empty")]
