@@ -1,6 +1,5 @@
 pub mod generators {
     pub mod naive;
-    pub mod smart;
 }
 
 pub mod lookups {

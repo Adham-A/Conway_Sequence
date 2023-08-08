@@ -2,6 +2,7 @@ use crate::generators::naive::NaiveGenerator;
 use crate::lookups::element_decay::ELEMENT_DECAY_LOOKUP;
 use crate::lookups::sequence_element::SEQUENCE_ELEMENT_LOOKUP;
 use crate::utils::split::is_valid_split;
+use rayon::prelude::*;
 use std::fmt;
 #[derive(Default)]
 pub struct SubSequence {
@@ -53,12 +54,11 @@ impl SubSequence {
     }
 
     pub fn next(self) -> Vec<Self> {
-        let mut results: Vec<Self> = vec![];
-
         if self.is_atomic() {
             self.next_atomic()
         } else {
             // Fallbacks to naive generator
+            let mut results: Vec<Self> = vec![];
             let chars: Vec<char> = self.numbers.unwrap().chars().collect();
             let numbers = NaiveGenerator::new().next_sequence(&chars);
 
@@ -81,7 +81,7 @@ impl SubSequence {
 
             results.push(Self::new(Some(String::from(&numbers[start..])), None));
 
-            results.iter_mut().for_each(|e| e.number_to_atom());
+            results.par_iter_mut().for_each(|e| e.number_to_atom());
             results
         }
     }
@@ -123,17 +123,5 @@ mod tests {
         assert_eq!(res.len(), 2);
         assert_eq!(res[0].atom.as_ref().unwrap(), "Zn");
         assert_eq!(res[1].atom.as_ref().unwrap(), "Co");
-    }
-
-    #[test_case("1".into())]
-    fn sequence_test_with_seed(seed: String) {
-        let s = SubSequence::new(seed.into(), None);
-        let mut v = s.next();
-        for _ in 0..15 {
-            v.iter().for_each(|f| print!("{f}."));
-            println!();
-            v = v.into_iter().map(|f| f.next()).flatten().collect();
-        }
-        println!();
     }
 }

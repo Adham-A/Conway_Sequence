@@ -1,8 +1,8 @@
 use clap::Parser;
 use conway_sequence::generators::naive::NaiveGenerator;
-use conway_sequence::generators::smart::SmartGenerator;
+use conway_sequence::utils::sequence::Sequence;
 use std::fs::File;
-
+use std::io::prelude::*;
 /// Generate and save conway sequence
 #[derive(Parser, Debug)]
 struct Args {
@@ -32,17 +32,13 @@ fn naive_generation(seed: String, iterations: usize, mut file: File) -> std::io:
 }
 
 fn smart_generation(seed: String, iterations: usize, mut file: File) -> std::io::Result<File> {
-    let generator = SmartGenerator::new();
-    let mut n_term: Vec<char> = seed.chars().collect();
-
+    let mut s = Sequence::new(seed);
     for i in 0..iterations {
-        let n1_term = generator.next_sequence(&n_term);
-        file = generator.write_sequence_to_file(n_term, file).unwrap();
-        n_term = n1_term;
-        println!("Iteration {i}");
+        s = s.next();
+        file.write_all(format!("{}\n", s).as_bytes())?;
+        println!("{i}");
     }
-
-    generator.write_sequence_to_file(n_term, file)
+    Ok(file)
 }
 
 fn main() -> std::io::Result<()> {
